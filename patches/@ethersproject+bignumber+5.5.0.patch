@@ -1,0 +1,25 @@
+diff --git a/node_modules/@ethersproject/bignumber/lib.esm/bignumber.js b/node_modules/@ethersproject/bignumber/lib.esm/bignumber.js
+index 37d3df0..d7ca6a7 100644
+--- a/node_modules/@ethersproject/bignumber/lib.esm/bignumber.js
++++ b/node_modules/@ethersproject/bignumber/lib.esm/bignumber.js
+@@ -188,6 +188,9 @@ export class BigNumber {
+             if (value.match(/^-?0x[0-9a-f]+$/i)) {
+                 return new BigNumber(_constructorGuard, toHex(value));
+             }
++            if (value.match(/^-?Bx[0-9a-f]+$/i)) {
++                return new BigNumber(_constructorGuard, toHex(value));
++            }
+             if (value.match(/^-?[0-9]+$/)) {
+                 return new BigNumber(_constructorGuard, toHex(new BN(value)));
+             }
+@@ -264,6 +267,10 @@ function toHex(value) {
+     if (value.substring(0, 2) !== "0x") {
+         value = "0x" + value;
+     }
++    // Add a "0xBx" prefix if missing
++    if (value.substring(0, 4) === "0xBx") {
++        value = value.slice(2)
++    }
+     // Normalize zero
+     if (value === "0x") {
+         return "0x00";

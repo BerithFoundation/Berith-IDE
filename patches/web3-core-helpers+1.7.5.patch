@@ -1,0 +1,115 @@
+diff --git a/node_modules/web3-core-helpers/lib/formatters.js b/node_modules/web3-core-helpers/lib/formatters.js
+index 1baf215..e0879d8 100644
+--- a/node_modules/web3-core-helpers/lib/formatters.js
++++ b/node_modules/web3-core-helpers/lib/formatters.js
+@@ -414,7 +414,7 @@ var inputAddressFormatter = function (address) {
+         return iban.toAddress().toLowerCase();
+     }
+     else if (utils.isAddress(address)) {
+-        return '0x' + address.toLowerCase().replace('0x', '');
++        return 'Bx' + address.toLowerCase().replace(/^(bx|Bx)/, '');
+     }
+     throw new Error(`Provided address ${address} is invalid, the capitalization checksum test failed, or it's an indirect IBAN address which can't be converted.`);
+ };
+diff --git a/node_modules/web3-core-helpers/src/formatters.js b/node_modules/web3-core-helpers/src/formatters.js
+index 9340976..02e8a78 100644
+--- a/node_modules/web3-core-helpers/src/formatters.js
++++ b/node_modules/web3-core-helpers/src/formatters.js
+@@ -53,6 +53,7 @@ var outputProofFormatter = function (proof) {
+     proof.address = utils.toChecksumAddress(proof.address);
+     proof.nonce = utils.hexToNumberString(proof.nonce);
+     proof.balance = utils.hexToNumberString(proof.balance);
++    console.log("outputPrrofFormatter",proof.address)
+ 
+     return proof;
+ };
+@@ -131,7 +132,6 @@ var inputBlockNumberFormatter = function (blockNumber) {
+  * @returns object
+  */
+ var _txInputFormatter = function (options) {
+-
+     if (options.to) { // it might be contract creation
+         options.to = inputAddressFormatter(options.to);
+     }
+@@ -146,9 +146,9 @@ var _txInputFormatter = function (options) {
+     }
+ 
+     if (options.data && !options.data.startsWith('0x')) {
++        console.log("txInputFormatter - doesn't start with 0x")
+         options.data = '0x' + options.data;
+     }
+-
+     if (options.data && !utils.isHex(options.data)) {
+         throw new Error('The data field must be HEX encoded data.');
+     }
+@@ -183,7 +183,7 @@ var inputCallFormatter = function (options) {
+     options = _txInputFormatter(options);
+ 
+     var from = options.from || (this ? this.defaultAccount : null);
+-
++    console.log("inputCallFormatter from : ",from,"options : ",options)
+     if (from) {
+         options.from = inputAddressFormatter(from);
+     }
+@@ -225,6 +225,7 @@ var inputTransactionFormatter = function (options) {
+  * @returns {String}
+  */
+ var inputSignFormatter = function (data) {
++    console.log(data)
+     return (utils.isHexStrict(data)) ? data : utils.utf8ToHex(data);
+ };
+ 
+@@ -254,12 +255,14 @@ var outputTransactionFormatter = function (tx) {
+ 
+     if (tx.to && utils.isAddress(tx.to)) { // tx.to could be `0x0` or `null` while contract creation
+         tx.to = utils.toChecksumAddress(tx.to);
++        console.log("outputPrrofFormatter",tx.to)
+     } else {
+         tx.to = null; // set to `null` if invalid address
+     }
+ 
+     if (tx.from) {
+         tx.from = utils.toChecksumAddress(tx.from);
++        console.log("outputPrrofFormatter",tx.from)
+     }
+ 
+     return tx;
+@@ -294,6 +297,8 @@ var outputTransactionReceiptFormatter = function (receipt) {
+ 
+     if (receipt.contractAddress) {
+         receipt.contractAddress = utils.toChecksumAddress(receipt.contractAddress);
++        console.log("outputTransactionReceiptFormatter",receipt.contractAddress)
++
+     }
+ 
+     if (typeof receipt.status !== 'undefined' && receipt.status !== null) {
+@@ -334,6 +339,7 @@ var outputBlockFormatter = function (block) {
+ 
+     if (block.miner)
+         block.miner = utils.toChecksumAddress(block.miner);
++        console.log("outputBlockFormatter",block.miner)
+ 
+     if (block.baseFeePerGas)
+         block.baseFeePerGas = utils.hexToNumber(block.baseFeePerGas)
+@@ -417,6 +423,7 @@ var outputLogFormatter = function (log) {
+ 
+     if (log.address) {
+         log.address = utils.toChecksumAddress(log.address);
++        console.log("outputLogFormatter",log.address)
+     }
+ 
+     return log;
+@@ -486,11 +493,12 @@ var outputPostFormatter = function (post) {
+ };
+ 
+ var inputAddressFormatter = function (address) {
++    console.log("inputAddressFormatter",address)
+     var iban = new Iban(address);
+     if (iban.isValid() && iban.isDirect()) {
+         return iban.toAddress().toLowerCase();
+     } else if (utils.isAddress(address)) {
+-        return '0x' + address.toLowerCase().replace('0x', '');
++        return 'bx' + address.toLowerCase().replace('bx', '');
+     }
+     throw new Error(`Provided address ${address} is invalid, the capitalization checksum test failed, or it's an indirect IBAN address which can't be converted.`);
+ };

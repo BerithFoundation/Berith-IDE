@@ -1,0 +1,74 @@
+diff --git a/node_modules/ethereumjs-util/dist.browser/account.js b/node_modules/ethereumjs-util/dist.browser/account.js
+index de7c7f9..adcdbb4 100644
+--- a/node_modules/ethereumjs-util/dist.browser/account.js
++++ b/node_modules/ethereumjs-util/dist.browser/account.js
+@@ -138,7 +138,7 @@ var isValidAddress = function (hexAddress) {
+     catch (e) {
+         return false;
+     }
+-    return /^0x[0-9a-fA-F]{40}$/.test(hexAddress);
++    return /^(Bx|bx)[0-9a-fA-F]{40}$/.test(hexAddress);
+ };
+ exports.isValidAddress = isValidAddress;
+ /**
+@@ -162,7 +162,7 @@ var toChecksumAddress = function (hexAddress, eip1191ChainId) {
+         prefix = chainId.toString() + '0x';
+     }
+     var hash = (0, hash_1.keccakFromString)(prefix + address).toString('hex');
+-    var ret = '0x';
++    var ret = 'Bx';
+     for (var i = 0; i < address.length; i++) {
+         if (parseInt(hash[i], 16) >= 8) {
+             ret += address[i].toUpperCase();
+diff --git a/node_modules/ethereumjs-util/dist.browser/internal.js b/node_modules/ethereumjs-util/dist.browser/internal.js
+index 10051f6..6140912 100644
+--- a/node_modules/ethereumjs-util/dist.browser/internal.js
++++ b/node_modules/ethereumjs-util/dist.browser/internal.js
+@@ -34,7 +34,9 @@ function isHexPrefixed(str) {
+     if (typeof str !== 'string') {
+         throw new Error("[isHexPrefixed] input must be type 'string', received type " + typeof str);
+     }
+-    return str[0] === '0' && str[1] === 'x';
++    // [Berith]
++    // Account or Transaction Hash prefix verify
++    return (str[0] === "B" || str[0] === "b" || str[0] == "0") && (str[1] ==="x" || str[1] === "X")
+ }
+ exports.isHexPrefixed = isHexPrefixed;
+ /**
+@@ -181,7 +183,7 @@ exports.getKeys = getKeys;
+  * @returns  output the string is a hex string
+  */
+ function isHexString(value, length) {
+-    if (typeof value !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/))
++    if (typeof value !== 'string' || !value.match(/^(bx|Bx|bX|BX|0x)[0-9A-Fa-f]*$/))
+         return false;
+     if (length && value.length !== 2 + 2 * length)
+         return false;
+diff --git a/node_modules/ethereumjs-util/dist/bytes.js b/node_modules/ethereumjs-util/dist/bytes.js
+index 5841109..bf3038c 100644
+--- a/node_modules/ethereumjs-util/dist/bytes.js
++++ b/node_modules/ethereumjs-util/dist/bytes.js
+@@ -13,6 +13,7 @@ const helpers_1 = require("./helpers");
+  * @return {String}
+  */
+ const intToHex = function (i) {
++    console.log("intToHEx",i)
+     if (!Number.isSafeInteger(i) || i < 0) {
+         throw new Error(`Received an invalid integer type: ${i}`);
+     }
+@@ -182,6 +183,7 @@ exports.bufferToInt = bufferToInt;
+  * @param buf `Buffer` object to convert
+  */
+ const bufferToHex = function (buf) {
++    console.log("bufferToHex")
+     buf = (0, exports.toBuffer)(buf);
+     return '0x' + buf.toString('hex');
+ };
+@@ -206,6 +208,7 @@ exports.toUnsigned = toUnsigned;
+  * Adds "0x" to a given `String` if it does not already start with "0x".
+  */
+ const addHexPrefix = function (str) {
++    console.log("addHexPrefix",str)
+     if (typeof str !== 'string') {
+         return str;
+     }

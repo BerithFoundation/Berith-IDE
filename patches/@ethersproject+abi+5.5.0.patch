@@ -1,0 +1,26 @@
+diff --git a/node_modules/@ethersproject/abi/lib.esm/coders/address.js b/node_modules/@ethersproject/abi/lib.esm/coders/address.js
+index 39988bd..aecc711 100644
+--- a/node_modules/@ethersproject/abi/lib.esm/coders/address.js
++++ b/node_modules/@ethersproject/abi/lib.esm/coders/address.js
+@@ -7,7 +7,7 @@ export class AddressCoder extends Coder {
+         super("address", "address", localName, false);
+     }
+     defaultValue() {
+-        return "0x0000000000000000000000000000000000000000";
++        return "Bx0000000000000000000000000000000000000000";
+     }
+     encode(writer, value) {
+         try {
+diff --git a/node_modules/@ethersproject/abi/src.ts/coders/address.ts b/node_modules/@ethersproject/abi/src.ts/coders/address.ts
+index 6ae2d27..718926c 100644
+--- a/node_modules/@ethersproject/abi/src.ts/coders/address.ts
++++ b/node_modules/@ethersproject/abi/src.ts/coders/address.ts
+@@ -12,7 +12,7 @@ export class AddressCoder extends Coder {
+     }
+ 
+     defaultValue(): string {
+-        return "0x0000000000000000000000000000000000000000";
++        return "Bx0000000000000000000000000000000000000000";
+     }
+ 
+     encode(writer: Writer, value: string): number {

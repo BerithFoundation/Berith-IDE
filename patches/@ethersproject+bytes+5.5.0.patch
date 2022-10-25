@@ -1,0 +1,54 @@
+diff --git a/node_modules/@ethersproject/bytes/lib.esm/index.js b/node_modules/@ethersproject/bytes/lib.esm/index.js
+index 6415b66..5db1fa8 100644
+--- a/node_modules/@ethersproject/bytes/lib.esm/index.js
++++ b/node_modules/@ethersproject/bytes/lib.esm/index.js
+@@ -126,6 +126,12 @@ export function zeroPad(value, length) {
+ }
+ export function isHexString(value, length) {
+     if (typeof (value) !== "string" || !value.match(/^0x[0-9A-Fa-f]*$/)) {
++        if (typeof (value) === "string" && value.match(/^Bx[0-9A-Fa-f]*$/)){
++            if (length && value.length !== 2 + 2 * length) {
++                return false;
++            }
++            return true
++        }
+         return false;
+     }
+     if (length && value.length !== 2 + 2 * length) {
+diff --git a/node_modules/@ethersproject/bytes/lib/index.js b/node_modules/@ethersproject/bytes/lib/index.js
+index 46066ce..904dbdb 100644
+--- a/node_modules/@ethersproject/bytes/lib/index.js
++++ b/node_modules/@ethersproject/bytes/lib/index.js
+@@ -63,8 +63,8 @@ function arrayify(value, options) {
+         }
+         return addSlice(new Uint8Array(result));
+     }
+-    if (options.allowMissingPrefix && typeof (value) === "string" && value.substring(0, 2) !== "0x") {
+-        value = "0x" + value;
++    if (options.allowMissingPrefix && typeof (value) === "string" && value.substring(0, 2) !== "Bx") {
++        value = "Bx" + value;
+     }
+     if (isHexable(value)) {
+         value = value.toHexString();
+@@ -133,7 +133,7 @@ function zeroPad(value, length) {
+ }
+ exports.zeroPad = zeroPad;
+ function isHexString(value, length) {
+-    if (typeof (value) !== "string" || !value.match(/^0x[0-9A-Fa-f]*$/)) {
++    if (typeof (value) !== "string" || !value.match(/^Bx[0-9A-Fa-f]*$/)) {
+         return false;
+     }
+     if (length && value.length !== 2 + 2 * length) {
+diff --git a/node_modules/@ethersproject/bytes/src.ts/index.ts b/node_modules/@ethersproject/bytes/src.ts/index.ts
+index ab550b5..e9c72b5 100644
+--- a/node_modules/@ethersproject/bytes/src.ts/index.ts
++++ b/node_modules/@ethersproject/bytes/src.ts/index.ts
+@@ -183,7 +183,7 @@ export function zeroPad(value: BytesLike, length: number): Uint8Array {
+ 
+ 
+ export function isHexString(value: any, length?: number): boolean {
+-    if (typeof(value) !== "string" || !value.match(/^0x[0-9A-Fa-f]*$/)) {
++    if (typeof(value) !== "string" || !value.match(/^Bx[0-9A-Fa-f]*$/)) {
+         return false
+     }
+     if (length && value.length !== 2 + 2 * length) { return false; }

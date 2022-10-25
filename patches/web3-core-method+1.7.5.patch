@@ -1,0 +1,28 @@
+diff --git a/node_modules/web3-core-method/lib/index.js b/node_modules/web3-core-method/lib/index.js
+index d4d0df7..d6321e5 100644
+--- a/node_modules/web3-core-method/lib/index.js
++++ b/node_modules/web3-core-method/lib/index.js
+@@ -524,6 +524,7 @@ Method.prototype.buildCall = function () {
+                 }
+                 if (reasonData) {
+                     var reason = method.abiCoder.decodeParameter('string', '0x' + reasonData);
++                    console.log("reason : ",reason)
+                     var signature = 'Error(String)';
+                     utils._fireError(errors.RevertInstructionError(reason, signature), defer.eventEmitter, defer.reject, payload.callback, {
+                         reason: reason,
+@@ -671,6 +672,7 @@ Method.prototype.buildCall = function () {
+     send.method = method;
+     // necessary for batch requests
+     send.request = this.request.bind(this);
++
+     return send;
+ };
+ function _handleTxPricing(method, tx) {
+@@ -787,6 +789,7 @@ Method.prototype.isRevertReasonString = function (data) {
+ Method.prototype.request = function () {
+     var payload = this.toPayload(Array.prototype.slice.call(arguments));
+     payload.format = this.formatOutput.bind(this);
++    console.log("payload : ",payload)
+     return payload;
+ };
+ module.exports = Method;
